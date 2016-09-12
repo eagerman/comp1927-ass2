@@ -1,0 +1,6 @@
+# Clion files
+.idea
+
+# C files
+*.[oa]
+*~
