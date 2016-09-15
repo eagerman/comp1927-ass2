@@ -6,13 +6,24 @@
 #include "Game.h"
 #include "GameView.h"
 // #include "Map.h" ... if you decide to use the Map ADT
-     
+
+typedef struct _player *Player;
+
 struct gameView {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    char *pastPlays[];
+    Player players[NUM_PLAYERS];
+    int score;
+    Round current;
+    char *pastPlays;
     PlayerMessage message[];
-    int hello;
 };
+
+
+typedef struct _player {
+    int health;
+    LocationID current;
+    LocationID trail[];
+} *Player;
      
 
 // Creates a new GameView to summarise the current state of the game
@@ -20,7 +31,24 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     GameView gameView = malloc(sizeof(struct gameView));
-    gameView->hello = 42;
+    gameView->score = GAME_START_SCORE;
+    gameView->current = 0;
+
+    gameView->players[PLAYER_LORD_GODALMING]->health = GAME_START_HUNTER_LIFE_POINTS;
+    gameView->players[PLAYER_LORD_GODALMING]->current = NOWHERE;
+
+    gameView->players[PLAYER_DR_SEWARD]->health = GAME_START_HUNTER_LIFE_POINTS;
+    gameView->players[PLAYER_DR_SEWARD]->current = NOWHERE;
+
+    gameView->players[PLAYER_VAN_HELSING]->health = GAME_START_HUNTER_LIFE_POINTS;
+    gameView->players[PLAYER_VAN_HELSING]->current = NOWHERE;
+
+    gameView->players[PLAYER_MINA_HARKER]->health = GAME_START_HUNTER_LIFE_POINTS;
+    gameView->players[PLAYER_MINA_HARKER]->current = NOWHERE;
+
+    gameView->players[PLAYER_DRACULA]->health = GAME_START_BLOOD_POINTS;
+    gameView->players[PLAYER_DRACULA]->current = CASTLE_DRACULA;
+
     return gameView;
 }
      
