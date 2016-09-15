@@ -9,6 +9,8 @@
      
 struct gameView {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+    char *pastPlays[];
+    PlayerMessage message[];
     int hello;
 };
      
