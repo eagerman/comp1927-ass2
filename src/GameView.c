@@ -53,11 +53,10 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
 
 static void analyseMove(char move[])
 {
-    // PlayerID player = move[0];
-    // char *location = strncpy(location, move[1], 2));
-    // locationID currLocation = abbrevToID(location);
-    // char actions[] = strncpy(location, move[3], 4));
-    
+    PlayerID player = move[0];
+    char *location = strncpy(location, move[1], 2));
+    locationID currLocation = abbrevToID(location);
+    char actions[] = strncpy(location, move[3], 4));
 }
      
 static void setInitialState(GameView g)
