@@ -36,6 +36,7 @@ static void actionD(PlayerID player, GameView g);
 static void actionV(PlayerID player, GameView g);
 static int calculateArrayLength(char* pastPlays);
 static void addToTrail(PlayerID player, GameView g, LocationID currLocation);
+static void checkDracSea(GameView g);
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView(char *pastPlays, PlayerMessage messages[])
@@ -118,12 +119,14 @@ static void analyseMove(char move[], GameView g)
         } else if (strcmp("TP", location) == 0) {
             g->players[PLAYER_DRACULA]->current = CASTLE_DRACULA;
             addToTrail(PLAYER_DRACULA, g, CASTLE_DRACULA);
+            g->players[PLAYER_DRACULA]->health = LIFE_GAIN_CASTLE_DRACULA;
         } else if (strcmp("..", location) == 0){
 
         } else {
             g->players[PLAYER_DRACULA]->current = abbrevToID(location);
             addToTrail(PLAYER_DRACULA, g, abbrevToID(location));
         }
+        checkDracSea(g);
     }
     
     // Do stuff if its a hunter
@@ -171,6 +174,81 @@ static void analyseMove(char move[], GameView g)
 static void actionT(PlayerID player, GameView g)
 {
     g->players[player]->health = g->players[player]->health - LIFE_LOSS_TRAP_ENCOUNTER;
+}
+
+static void checkDracSea(GameView g)
+{
+    Player Dracula = g->players[PLAYER_DRACULA];
+    if (Dracula->current == SEA_UNKNOWN) {
+        Dracula->health -= LIFE_LOSS_SEA;
+        return;
+    }
+    if (Dracula->current == DOUBLE_BACK_1) {
+        if (Dracula->history[1] == SEA_UNKNOWN) {
+            Dracula->health -= LIFE_LOSS_SEA;
+            return;
+        }
+        if (validPlace(Dracula->history[1])) {
+            if (idToType(Dracula->history[1]) == SEA) {
+                Dracula->health -= LIFE_LOSS_SEA;
+                return;
+            }
+        }
+    }
+    if (Dracula->current == DOUBLE_BACK_2) {
+        if (Dracula->history[2] == SEA_UNKNOWN) {
+            Dracula->health -= LIFE_LOSS_SEA;
+            return;
+        }
+        if (validPlace(Dracula->history[2])) {
+            if (idToType(Dracula->history[2]) == SEA) {
+                Dracula->health -= LIFE_LOSS_SEA;
+                return;
+            }
+        }
+    }
+    if (Dracula->current == DOUBLE_BACK_3) {
+        if (Dracula->history[3] == SEA_UNKNOWN) {
+            Dracula->health -= LIFE_LOSS_SEA;
+            return;
+        }
+        if (validPlace(Dracula->history[3])) {
+            if (idToType(Dracula->history[3]) == SEA) {
+                Dracula->health -= LIFE_LOSS_SEA;
+                return;
+            }
+        }
+    }
+    if (Dracula->current == DOUBLE_BACK_4) {
+        if (Dracula->history[4] == SEA_UNKNOWN) {
+            Dracula->health -= LIFE_LOSS_SEA;
+            return;
+        }
+        if (validPlace(Dracula->history[4])) {
+            if (idToType(Dracula->history[4]) == SEA) {
+                Dracula->health -= LIFE_LOSS_SEA;
+                return;
+            }
+        }
+    }
+    if (Dracula->current == DOUBLE_BACK_5) {
+        if (Dracula->history[5] == SEA_UNKNOWN) {
+            Dracula->health -= LIFE_LOSS_SEA;
+            return;
+        }
+        if (validPlace(Dracula->history[5])) {
+            if (idToType(Dracula->history[5]) == SEA) {
+                Dracula->health -= LIFE_LOSS_SEA;
+                return;
+            }
+        }
+    }
+    if (validPlace(Dracula->current)) {
+        if (idToType(Dracula->current) == SEA) {
+            Dracula->health -= LIFE_LOSS_SEA;
+            return;
+        }
+    }
 }
 
 static void actionD(PlayerID player, GameView g)
@@ -305,23 +383,23 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
                                int road, int rail, int sea)
 {
     //TODO: Implement function to return array of locationIDs
-    int railDist = (currentRound + player) % 4;
-    int rail = TRUE;
-
-    if (player == PLAYER_DRACULA) {
-        rail = FALSE;
-    }
-
-    reachable[NUM_MAP_LOCATIONS] = {FALSE};
-    reachableOne[NUM_MAP_LOCATIONS] = {FALSE};
-    reachableTwo[NUM_MAP_LOCATIONS] = {FALSE};
-    reachableThree[NUM_MAP_LOCATIONS] = {FALSE};
-
-    for (i = 0; i <= NUM_MAP_LOCATIONS; i++) {
-
-    }
-
-    reachablep[from] = TRUE; //because current location is always true af
+//    int railDist = (currentRound + player) % 4;
+//    int rail = TRUE;
+//
+//    if (player == PLAYER_DRACULA) {
+//        rail = FALSE;
+//    }
+//
+//    reachable[NUM_MAP_LOCATIONS] = {FALSE};
+//    reachableOne[NUM_MAP_LOCATIONS] = {FALSE};
+//    reachableTwo[NUM_MAP_LOCATIONS] = {FALSE};
+//    reachableThree[NUM_MAP_LOCATIONS] = {FALSE};
+//
+//    for (i = 0; i <= NUM_MAP_LOCATIONS; i++) {
+//
+//    }
+//
+//    reachablep[from] = TRUE; //because current location is always true af
 
 
 
