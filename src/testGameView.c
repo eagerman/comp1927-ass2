@@ -38,9 +38,10 @@ int main()
     disposeGameView(gv);
 
     printf("Test for encountering Dracula and hunter history\n");
-    PlayerMessage messages3[] = {"Hello","Rubbish","Stuff","","Mwahahah","Aha!"};
+    PlayerMessage messages3[] = {"Hello","Rubbish","Stuff","5555","","Aha!"};
     gv = newGameView("GST.... SAO.... HCD.... MAO.... DGE.... GGED...", messages3);
     assert(getLocation(gv,PLAYER_DRACULA) == GENEVA);
+    printf("health is %d\n", getHealth(gv, PLAYER_LORD_GODALMING));
     assert(getHealth(gv,PLAYER_LORD_GODALMING) == 5);
     assert(getHealth(gv,PLAYER_DRACULA) == 30);
     assert(getLocation(gv,PLAYER_LORD_GODALMING) == GENEVA);

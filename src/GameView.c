@@ -34,7 +34,8 @@ static void analyseMove(char move[], GameView g);
 static void actionT(PlayerID player, GameView g);
 static void actionD(PlayerID player, GameView g);
 static void actionV(PlayerID player, GameView g);
-//static void addToTrail(playerID player, Gameview g, LocationID currLocation);
+static int calculateArrayLength(char* pastPlays);
+static void addToTrail(PlayerID player, GameView g, LocationID currLocation);
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView(char *pastPlays, PlayerMessage messages[])
@@ -42,16 +43,20 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     GameView g = malloc(sizeof(struct gameView));
     assert(g != NULL);
-    int numPlays = strlen(*messages);
+    int numPlays = calculateArrayLength(pastPlays)/8;
+    printf("numPlays is %d\n", numPlays);
     setInitialState(g);
     g->currentRound = numPlays / NUM_PLAYERS;
     int currPlay = 0;
     int strIndex = 0;
+
     while (currPlay < numPlays) {
         // pass in GST.....
-        char move[10];
+        char move[8];
         memcpy(move, &pastPlays[strIndex], 7);
-        printf("%s\n", move);
+        move[8] = '\0';
+        printf("move is %s\n", move);
+        printf("currPlay is %d\n", currPlay);
         //where all the magic happens
         analyseMove(move, g);
         strIndex += 8;
@@ -61,49 +66,64 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
     return g;
 }
 
+static int calculateArrayLength(char* pastPlays)
+{
+    int length = 0;
+    for (int i=0; pastPlays[i] != '\0'; i++) {
+        length++;
+    }
+    return (length+1);
+}
+
 static void analyseMove(char move[], GameView g)
 {
     PlayerID player = move[0];
     char location[2];
     memcpy(location, &move[1], 2);
+    location[2] = '\0';
     LocationID currLocation = abbrevToID(location);
     char actions[4];
     memcpy(actions, &move[3], 4);
+    actions[4] = '\0';
+    printf("curr Player is %c\n", player);
+    printf("location is %s\n", location);
+    printf("action is %s\n", actions);
     //Do stuff if it's a dracula
     if (player == 'D') {
         // move phase
-        if (strcmp("C?",location)) {
+        if (strcmp("C?",location) == 0) {
             g->players[PLAYER_DRACULA]->current = CITY_UNKNOWN;
-        } else if (strcmp("S?", location)) {
+            addToTrail(PLAYER_DRACULA, g, CITY_UNKNOWN);
+        } else if (strcmp("S?", location) == 0) {
             g->players[PLAYER_DRACULA]->current = SEA_UNKNOWN;
-        } else if (strcmp("HI", location)) {
+            addToTrail(PLAYER_DRACULA, g, SEA_UNKNOWN);
+        } else if (strcmp("HI", location) == 0) {
             g->players[PLAYER_DRACULA]->current = HIDE;
-        } else if (strcmp("D1", location)) {
-            g->players[PLAYER_DRACULA]->current = g->players[PLAYER_DRACULA]->history[0];
-        } else if (strcmp("D2", location)) {
-            g->players[PLAYER_DRACULA]->current = g->players[PLAYER_DRACULA]->history[1];
-        } else if (strcmp("D3", location)) {
-            g->players[PLAYER_DRACULA]->current = g->players[PLAYER_DRACULA]->history[2];
-        } else if (strcmp("D4", location)) {
-            g->players[PLAYER_DRACULA]->current = g->players[PLAYER_DRACULA]->history[3];
-        } else if (strcmp("D5", location)) {
-            g->players[PLAYER_DRACULA]->current = g->players[PLAYER_DRACULA]->history[4];
-        } else if (strcmp("TP", location)) {
+            addToTrail(PLAYER_DRACULA, g, HIDE);
+        } else if (strcmp("D1", location) == 0) {
+            g->players[PLAYER_DRACULA]->current = DOUBLE_BACK_1;
+            addToTrail(PLAYER_DRACULA, g, DOUBLE_BACK_1);
+        } else if (strcmp("D2", location) == 0) {
+            g->players[PLAYER_DRACULA]->current = DOUBLE_BACK_2;
+            addToTrail(PLAYER_DRACULA, g, DOUBLE_BACK_2);
+        } else if (strcmp("D3", location) == 0) {
+            g->players[PLAYER_DRACULA]->current = DOUBLE_BACK_3;
+            addToTrail(PLAYER_DRACULA, g, DOUBLE_BACK_3);
+        } else if (strcmp("D4", location) == 0) {
+            g->players[PLAYER_DRACULA]->current = DOUBLE_BACK_4;
+            addToTrail(PLAYER_DRACULA, g, DOUBLE_BACK_4);
+        } else if (strcmp("D5", location) == 0) {
+            g->players[PLAYER_DRACULA]->current = DOUBLE_BACK_5;
+            addToTrail(PLAYER_DRACULA, g, DOUBLE_BACK_5);
+        } else if (strcmp("TP", location) == 0) {
             g->players[PLAYER_DRACULA]->current = CASTLE_DRACULA;
+            addToTrail(PLAYER_DRACULA, g, CASTLE_DRACULA);
+        } else if (strcmp("..", location) == 0){
+
         } else {
             g->players[PLAYER_DRACULA]->current = abbrevToID(location);
+            addToTrail(PLAYER_DRACULA, g, abbrevToID(location));
         }
-        
-        // Encounter
-        // char encounter[2];
-        // memcpy(encounter, &actions[0], 2);
-        // for (int i=0; int < 2; i++) {
-            
-        // }
-        
-        
-        //action phase
-        
     }
     
     // Do stuff if its a hunter
@@ -121,20 +141,15 @@ static void analyseMove(char move[], GameView g)
         }
         // Move the player
         g->players[currHunter]->current = currLocation;
-        g->players[currHunter]->history[0] = currLocation; //addToHistory()
-        
-        // What's happened?
-        
-        
+        addToTrail(currHunter, g, currLocation);
+
         // Make the action?
         for (int i=0; i < 4; i++) {
             if (g->players[currHunter]->health > 0 && g->players[PLAYER_DRACULA]->health > 0) {
                 // both alive
-                // printf("action is %s\n", actions[i]);
                 switch(actions[i]) {
-                    printf("%d\n", actions[i]);
-                    case 'T': actionT(currHunter, g);  break;
-                    case 'D': actionD(currHunter, g);  break;
+                    case 'T': actionT(currHunter, g); break;
+                    case 'D': actionD(currHunter, g); break;
                     case 'V': actionV(currHunter, g); break;
                     case '.': break;//do nothing;
                 }
@@ -142,6 +157,7 @@ static void analyseMove(char move[], GameView g)
                 // player is dead dracula is alive
                 g->players[currHunter]->health = 0;
                 g->players[currHunter]->current = ST_JOSEPH_AND_ST_MARYS;
+                addToTrail(currHunter, g, currLocation);
                 break;
             } else if (g->players[PLAYER_DRACULA]->health <= 0) {
                 // player is alive and dracula is dead
@@ -150,15 +166,6 @@ static void analyseMove(char move[], GameView g)
             }
         }
     }
-        
-    
-        //before he can move we check if he has any encounters which might make him dieded - GUYS PLEASE CHECK CASES AND RULES FOR THIS, SO MANY SPECIFICS
-        //if health is less than zero, move to hospital
-        //currLocation to hospital
-        
-        //if there is nothing life threatening, then he can move, right??
-        //g->players[currHunter]->current = currLocation;
-
 }
 
 static void actionT(PlayerID player, GameView g)
@@ -172,6 +179,7 @@ static void actionD(PlayerID player, GameView g)
     g->players[PLAYER_DRACULA]->health = g->players[PLAYER_DRACULA]->health - LIFE_LOSS_HUNTER_ENCOUNTER;
     printf("%d\n", g->players[player]->current);
     g->players[PLAYER_DRACULA]->current = g->players[player]->current;
+    g->players[PLAYER_DRACULA]->history[0] = g->players[player]->current;
 }
 
 static void actionV(PlayerID player, GameView g)
@@ -186,11 +194,13 @@ static void actionV(PlayerID player, GameView g)
     
 }
 
-
-//static void addToTrail(playerID player, Gameview g, LocationID currLocation) {
-    
-    
-//}
+static void addToTrail(PlayerID player, GameView g, LocationID currLocation)
+{
+    for (int i = TRAIL_SIZE-1; i > 0; i--) {
+        g->players[player]->history[i] = g->players[player]->history[i-1];
+    }
+    g->players[player]->history[0] = currLocation;
+}
 
 
      
@@ -213,25 +223,22 @@ static void setInitialState(GameView g)
     g->players[PLAYER_LORD_GODALMING]->health = GAME_START_HUNTER_LIFE_POINTS;
     g->players[PLAYER_LORD_GODALMING]->current = NOWHERE;
     memset ( g->players[PLAYER_LORD_GODALMING]->history, NOWHERE, sizeof ( g->players[PLAYER_LORD_GODALMING]->history));
-    printf("%d\n", g->players[PLAYER_LORD_GODALMING]->history[0]);
-    printf("%d\n", g->players[PLAYER_LORD_GODALMING]->history[1]);
-    printf("%d\n", g->players[PLAYER_LORD_GODALMING]->history[2]);
-    printf("%d\n", g->players[PLAYER_LORD_GODALMING]->history[3]);
-    printf("%d\n", g->players[PLAYER_LORD_GODALMING]->history[4]);
-    printf("%d\n", g->players[PLAYER_LORD_GODALMING]->history[5]);
-
 
     g->players[PLAYER_DR_SEWARD]->health = GAME_START_HUNTER_LIFE_POINTS;
     g->players[PLAYER_DR_SEWARD]->current = NOWHERE;
+    memset ( g->players[PLAYER_DR_SEWARD]->history, NOWHERE, sizeof ( g->players[PLAYER_DR_SEWARD]->history));
 
     g->players[PLAYER_VAN_HELSING]->health = GAME_START_HUNTER_LIFE_POINTS;
     g->players[PLAYER_VAN_HELSING]->current = NOWHERE;
+    memset ( g->players[PLAYER_VAN_HELSING]->history, NOWHERE, sizeof ( g->players[PLAYER_VAN_HELSING]->history));
     
     g->players[PLAYER_MINA_HARKER]->health = GAME_START_HUNTER_LIFE_POINTS;
     g->players[PLAYER_MINA_HARKER]->current = NOWHERE;
+    memset ( g->players[PLAYER_MINA_HARKER]->history, NOWHERE, sizeof ( g->players[PLAYER_MINA_HARKER]->history));
 
     g->players[PLAYER_DRACULA]->health = GAME_START_BLOOD_POINTS;
     g->players[PLAYER_DRACULA]->current = NOWHERE;
+    memset ( g->players[PLAYER_DRACULA]->history, NOWHERE, sizeof ( g->players[PLAYER_DRACULA]->history));
 
 }
 // Frees all memory previously allocated for the GameView toBeDeleted
