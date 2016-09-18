@@ -97,6 +97,7 @@ static void analyseMove(char move[], GameView g)
         } else if (strcmp("S?", location) == 0) {
             g->players[PLAYER_DRACULA]->current = SEA_UNKNOWN;
             addToTrail(PLAYER_DRACULA, g, SEA_UNKNOWN);
+            g->players[PLAYER_DRACULA]->health -= LIFE_LOSS_SEA;
         } else if (strcmp("HI", location) == 0) {
             g->players[PLAYER_DRACULA]->current = HIDE;
             addToTrail(PLAYER_DRACULA, g, HIDE);
@@ -118,6 +119,7 @@ static void analyseMove(char move[], GameView g)
         } else if (strcmp("TP", location) == 0) {
             g->players[PLAYER_DRACULA]->current = CASTLE_DRACULA;
             addToTrail(PLAYER_DRACULA, g, CASTLE_DRACULA);
+            g->players[PLAYER_DRACULA]->health = LIFE_GAIN_CASTLE_DRACULA;
         } else if (strcmp("..", location) == 0){
 
         } else {
@@ -304,27 +306,103 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
                                LocationID from, PlayerID player, Round round,
                                int road, int rail, int sea)
 {
-    //TODO: Implement function to return array of locationIDs
-    int railDist = (currentRound + player) % 4;
-    int rail = TRUE;
+    Map map = newMap();
+    int railDist = (round + player) % 4;
 
     if (player == PLAYER_DRACULA) {
-        rail = FALSE;
+        railDist = FALSE;
     }
-
-    reachable[NUM_MAP_LOCATIONS] = {FALSE};
-    reachableOne[NUM_MAP_LOCATIONS] = {FALSE};
-    reachableTwo[NUM_MAP_LOCATIONS] = {FALSE};
-    reachableThree[NUM_MAP_LOCATIONS] = {FALSE};
-
-    for (i = 0; i <= NUM_MAP_LOCATIONS; i++) {
-
+    
+    int reachableRoad[NUM_MAP_LOCATIONS] = {FALSE};
+    int reachableSea[NUM_MAP_LOCATIONS] = {FALSE};
+    int reachableRailOne[NUM_MAP_LOCATIONS] = {FALSE};
+    int reachableRailTwo[NUM_MAP_LOCATIONS] = {FALSE};
+    int reachableRailThree[NUM_MAP_LOCATIONS] = {FALSE};
+    
+    //connections via ROAD and SEA and RAIL (one step ONLY)
+    for (int to = 0; to < NUM_MAP_LOCATIONS; to++) {
+        TransportID type[] = {0,0,0};
+        connections(map, from, to, type);
+        for (int i = 0; i < 3; i++) {
+            if (type[i] == 1 && road == TRUE) {
+                reachableRoad[to] = TRUE;
+            }
+            if (type[i] == 2 && railDist >= 1) {
+                reachableRailOne[to] = TRUE;
+            }
+            if (type[i] == 3 && sea == TRUE) {
+                reachableSea[to] = TRUE;
+            }
+        }
     }
-
-    reachablep[from] = TRUE; //because current location is always true af
-
-
-
+    
+    if (railDist == 2) {
+        for (int start = 0; start < NUM_MAP_LOCATIONS; start++) {
+            if (reachableRailOne[start] == TRUE) {
+                for (int to = 0; to <= NUM_MAP_LOCATIONS; to++) {
+                    TransportID type[] = {0,0,0};
+                    connections(map, start, to, type);
+                    for (int i = 0; i < 3; i++) {
+                        if (type[i] == 2 && railDist == 2) {
+                            reachableRailTwo[to] = TRUE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if (railDist == 3) {
+        for (int start = 0; start < NUM_MAP_LOCATIONS; start++) {
+            if (reachableRailTwo[start] == TRUE) {
+                for (int to = 0; to <= NUM_MAP_LOCATIONS; to++) {
+                    TransportID type[] = {0,0,0};
+                    connections(map, start, to, type);
+                    for (int i = 0; i < 3; i++) {
+                        if (type[i] == 2 && railDist == 3) {
+                            reachableRailThree[to] = TRUE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    int finalReach[NUM_MAP_LOCATIONS] = {FALSE};
+    
+    for (int j = 0; j < NUM_MAP_LOCATIONS; j++) {
+        if (reachableRoad[j] == TRUE) {
+            finalReach[j] = TRUE;
+        } if (reachableSea[j] == TRUE) {
+            finalReach[j] = TRUE;
+        } if (reachableRailOne[j] == TRUE) {
+            finalReach[j] = TRUE;
+        } if (reachableRailTwo[j] == TRUE) {
+            finalReach[j] = TRUE;
+        } if (reachableRailThree[j] == TRUE) {
+            finalReach[j] = TRUE;
+        }
+    }
+    //known cases
+    finalReach[from] = TRUE;
+    if (player == PLAYER_DRACULA) {
+        finalReach[ST_JOSEPH_AND_ST_MARYS] = FALSE;
+    }
+    
+    int retLen = 0;
+    for (int k = 0; k < NUM_MAP_LOCATIONS; k++) {
+        if (finalReach[k] == TRUE) {
+            retLen++;
+        }
+    }
+    LocationID * connectedLocs = (LocationID *)malloc(retLen*sizeof(LocationID));
+    int k = 0;
+    for (int locations = 0; locations < NUM_MAP_LOCATIONS; locations++) {
+        if (finalReach[locations] == TRUE) {
+            connectedLocs[k] = locations;
+            k++;
+        }
+    }
 
     return NULL;
 }

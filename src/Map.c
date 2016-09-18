@@ -23,7 +23,7 @@ struct MapRep {
 };
 
 static void addConnections(Map);
-
+static int checkPort(Map g, int port, LocationID end, int num_conn, TransportID type[]);
 // Create a new empty graph (for a map)
 // #Vertices always same as NUM_PLACES
 Map newMap()
@@ -133,6 +133,44 @@ int numE(Map g, TransportID type)
     }
     return nE;
 }
+
+// Returns the number of direct connections between two nodes
+// Also fills the type[] array with the various connection types
+// Returns 0 if no direct connection (i.e. not adjacent in graph)
+int connections(Map g, LocationID start, LocationID end, TransportID type[])
+{
+   assert(g != NULL);
+   int num_conn = 0;
+   VList curr = g->connections[start];
+   while ( curr != NULL ) {
+      if ( curr->v == end ) {
+         type[num_conn] = curr->type;
+         num_conn++;
+      }
+      else if ( curr->type == BOAT && idToType(start) != SEA) {
+         num_conn = checkPort(g, curr->v, end, num_conn, type);
+      }
+      curr = curr->next;
+   }
+   return num_conn;
+}
+
+static int checkPort(Map g, int port, LocationID end, int num_conn, TransportID type[]) 
+{
+   VList curr = g->connections[end];
+   while ( curr != NULL ) {
+      if ( curr->v == port ) {
+         type[num_conn] = curr->type;
+         num_conn++;
+         return num_conn;
+      }
+      curr = curr->next;
+   }
+   return num_conn;
+}
+
+
+
 
 // Add edges to Graph representing map of Europe
 static void addConnections(Map g)
