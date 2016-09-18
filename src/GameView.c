@@ -98,7 +98,6 @@ static void analyseMove(char move[], GameView g)
         } else if (strcmp("S?", location) == 0) {
             g->players[PLAYER_DRACULA]->current = SEA_UNKNOWN;
             addToTrail(PLAYER_DRACULA, g, SEA_UNKNOWN);
-            g->players[PLAYER_DRACULA]->health -= LIFE_LOSS_SEA;
         } else if (strcmp("HI", location) == 0) {
             g->players[PLAYER_DRACULA]->current = HIDE;
             addToTrail(PLAYER_DRACULA, g, HIDE);
@@ -383,7 +382,6 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
                                LocationID from, PlayerID player, Round round,
                                int road, int rail, int sea)
 {
-<<<<<<< HEAD
     Map map = newMap();
     int railDist = (round + player) % 4;
 
@@ -481,29 +479,5 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
             k++;
         }
     }
-=======
-    //TODO: Implement function to return array of locationIDs
-//    int railDist = (currentRound + player) % 4;
-//    int rail = TRUE;
-//
-//    if (player == PLAYER_DRACULA) {
-//        rail = FALSE;
-//    }
-//
-//    reachable[NUM_MAP_LOCATIONS] = {FALSE};
-//    reachableOne[NUM_MAP_LOCATIONS] = {FALSE};
-//    reachableTwo[NUM_MAP_LOCATIONS] = {FALSE};
-//    reachableThree[NUM_MAP_LOCATIONS] = {FALSE};
-//
-//    for (i = 0; i <= NUM_MAP_LOCATIONS; i++) {
-//
-//    }
-//
-//    reachablep[from] = TRUE; //because current location is always true af
-
-
-
->>>>>>> refs/remotes/origin/master
-
     return NULL;
 }
