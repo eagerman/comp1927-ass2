@@ -479,5 +479,6 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
             k++;
         }
     }
-    return NULL;
+    *numLocations = retLen;
+    return connectedLocs;
 }
