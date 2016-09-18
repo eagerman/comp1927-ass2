@@ -305,5 +305,26 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
                                int road, int rail, int sea)
 {
     //TODO: Implement function to return array of locationIDs
+    int railDist = (currentRound + player) % 4;
+    int rail = TRUE;
+
+    if (player == PLAYER_DRACULA) {
+        rail = FALSE;
+    }
+
+    reachable[NUM_MAP_LOCATIONS] = {FALSE};
+    reachableOne[NUM_MAP_LOCATIONS] = {FALSE};
+    reachableTwo[NUM_MAP_LOCATIONS] = {FALSE};
+    reachableThree[NUM_MAP_LOCATIONS] = {FALSE};
+
+    for (i = 0; i <= NUM_MAP_LOCATIONS; i++) {
+
+    }
+
+    reachablep[from] = TRUE; //because current location is always true af
+
+
+
+
     return NULL;
 }
