@@ -45,7 +45,6 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
     GameView g = malloc(sizeof(struct gameView));
     assert(g != NULL);
     int numPlays = calculateArrayLength(pastPlays)/8;
-    printf("numPlays is %d\n", numPlays);
     setInitialState(g);
     g->currentRound = numPlays / NUM_PLAYERS;
     int currPlay = 0;
@@ -56,8 +55,6 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
         char move[8];
         memcpy(move, &pastPlays[strIndex], 7);
         move[8] = '\0';
-        printf("move is %s\n", move);
-        printf("currPlay is %d\n", currPlay);
         //where all the magic happens
         analyseMove(move, g);
         strIndex += 8;
@@ -86,9 +83,6 @@ static void analyseMove(char move[], GameView g)
     char actions[4];
     memcpy(actions, &move[3], 4);
     actions[4] = '\0';
-    printf("curr Player is %c\n", player);
-    printf("location is %s\n", location);
-    printf("action is %s\n", actions);
     //Do stuff if it's a dracula
     if (player == 'D') {
         // move phase
@@ -127,6 +121,7 @@ static void analyseMove(char move[], GameView g)
             addToTrail(PLAYER_DRACULA, g, abbrevToID(location));
         }
         checkDracSea(g);
+        //TODO: Dracula Action Functions to be implemented
     }
     
     // Do stuff if its a hunter
@@ -255,7 +250,6 @@ static void actionD(PlayerID player, GameView g)
 {
     g->players[player]->health = g->players[player]->health - LIFE_LOSS_DRACULA_ENCOUNTER;
     g->players[PLAYER_DRACULA]->health = g->players[PLAYER_DRACULA]->health - LIFE_LOSS_HUNTER_ENCOUNTER;
-    printf("%d\n", g->players[player]->current);
     g->players[PLAYER_DRACULA]->current = g->players[player]->current;
     g->players[PLAYER_DRACULA]->history[0] = g->players[player]->current;
 }
