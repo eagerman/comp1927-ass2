@@ -431,7 +431,7 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
                                LocationID from, PlayerID player, Round round,
                                int road, int rail, int sea)
 {
-    Map map = newMap();
+    Map map = currentView->map;
     int railDist = (round + player) % 4;
 
     if (player == PLAYER_DRACULA) {
