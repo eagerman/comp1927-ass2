@@ -19,6 +19,7 @@ struct gameView {
     Round currentRound;
     PlayerID currentPlayer;
     LocationID immatureVampire;
+    LocationID Traps[NUM_MAP_LOCATIONS];
 }; //hey baby
 
 
@@ -37,6 +38,12 @@ static void actionV(PlayerID player, GameView g);
 static int calculateArrayLength(char* pastPlays);
 static void addToTrail(PlayerID player, GameView g, LocationID currLocation);
 static void checkDracSea(GameView g);
+
+// Drac Actions
+static void dracT(GameView g);
+static void dracIV(GameView g);
+static void dracM(GameView g);
+static void dracMV(GameView g);
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView(char *pastPlays, PlayerMessage messages[])
@@ -115,13 +122,36 @@ static void analyseMove(char move[], GameView g)
             addToTrail(PLAYER_DRACULA, g, CASTLE_DRACULA);
             g->players[PLAYER_DRACULA]->health = LIFE_GAIN_CASTLE_DRACULA;
         } else if (strcmp("..", location) == 0){
-
+            // do nothing
         } else {
             g->players[PLAYER_DRACULA]->current = abbrevToID(location);
             addToTrail(PLAYER_DRACULA, g, abbrevToID(location));
         }
         checkDracSea(g);
-        //TODO: Dracula Action Functions to be implemented
+        // Encounter
+        char encounter[2];
+        memcpy(encounter, &actions[0], 2);
+        encounter[2] = '\0';
+        for (int i = 0; i < 2; i++) {
+            switch(encounter[i]) {
+                case 'T': dracT(g); break;
+                case 'V': dracIV(g); break;
+                case '.': break;
+            }
+        }
+
+        //Action
+        char action[2];
+        memcpy(action, &actions[2], 2);
+        action[2] = '\0';
+        for (int i = 0; i < 2; i++) {
+            switch(action[i]) {
+                case 'M': dracM(g); break;
+                case 'V': dracMV(g); break;
+                case '.': break;
+            }
+        }
+
     }
     
     // Do stuff if its a hunter
@@ -164,6 +194,31 @@ static void analyseMove(char move[], GameView g)
             }
         }
     }
+}
+
+static void dracT(GameView g)
+{
+    LocationID curr = g->players[PLAYER_DRACULA]->current;
+    g->Traps[curr] += 1;
+}
+
+static void dracIV(GameView g)
+{
+    LocationID curr = g->players[PLAYER_DRACULA]->current;
+    g->immatureVampire = curr;
+}
+
+static void dracM(GameView g)
+{
+    LocationID trapLoc = g->players[PLAYER_DRACULA]->history[5];
+    assert(g->Traps[trapLoc] > 0);
+    g->Traps[trapLoc] -= 1;
+}
+
+static void dracMV(GameView g)
+{
+    g->score -= SCORE_LOSS_VAMPIRE_MATURES;
+    g->immatureVampire = UNKNOWN_LOCATION;
 }
 
 static void actionT(PlayerID player, GameView g)
