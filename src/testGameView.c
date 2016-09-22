@@ -120,7 +120,38 @@ int main()
     assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS);
     printf("passed\n");
     disposeGameView(gv);
-    
+
+    printf("More tests ......\n");
+    PlayerMessage messages6[] = {"Hello", "World","","","","",""};
+    gv = newGameView("GMN.... SPL.... HAM.... MPA.... DC?.V.. GLV.... SLO....", messages6);
+    assert(getRound(gv) == 1);
+    assert(getCurrentPlayer(gv) == PLAYER_VAN_HELSING);
+    assert(getLocation(gv, PLAYER_LORD_GODALMING) == LIVERPOOL);
+    assert(getLocation(gv, PLAYER_DR_SEWARD) == LONDON);
+    assert(getLocation(gv, PLAYER_VAN_HELSING) == AMSTERDAM);
+    assert(getLocation(gv, PLAYER_MINA_HARKER) == PARIS);
+    assert(getLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+    printf("passed\n");
+    disposeGameView(gv);
+
+    printf("EVEN MORE TESTS......\n");
+    PlayerMessage messages7[] = {"Hello", "World","","","",""};
+    gv = newGameView("GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD..", messages7);
+    assert(getRound(gv) == 1);
+    assert(getCurrentPlayer(gv) == PLAYER_DR_SEWARD);
+    assert(getLocation(gv, PLAYER_LORD_GODALMING) == SARAJEVO);
+    assert(getLocation(gv, PLAYER_DR_SEWARD) == BERLIN);
+    assert(getLocation(gv, PLAYER_VAN_HELSING) == LONDON);
+    assert(getLocation(gv, PLAYER_MINA_HARKER) == CADIZ);
+    assert(getLocation(gv, PLAYER_DRACULA) == SARAJEVO);
+    assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS-LIFE_LOSS_HUNTER_ENCOUNTER);
+    assert(getHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS-LIFE_LOSS_DRACULA_ENCOUNTER);
+    printf("passed\n");
+    disposeGameView(gv);
+
+    printf("Pretty good. FINAL TESTS.......\n");
+    PlayerMessage messages8[] = { "0" };
+    gv = newGameView("GED.... SGE.... HZU.... MCA.... DCF.V.. GMN.... SCFVD.. HGE.... MLS.... DBOT... GLO.... SMR.... HCF.... MMA.... DTOT... GPL.... SMS.... HMR.... MGR.... DBAT... GLO.... SBATD.. HMS.... MMA.... DSRT... GPL.... SSJ.... HBA.... MGR.... DALT... GPL.... SSJ.... HBA.... MGR.... DMAT... GLO.... SBE.... HMS.... MMATD..", messages8);
     
     return 0;
 }

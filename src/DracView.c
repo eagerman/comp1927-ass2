@@ -32,11 +32,8 @@ DracView newDracView(char *pastPlays, PlayerMessage messages[])
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     DracView dracView = malloc(sizeof(struct dracView));
-
     dracView->g = newGameView(pastPlays, messages);
-
     memset(dracView->Traps, 0, NUM_MAP_LOCATIONS* sizeof(LocationID));
-
 
     for (int i = 0; i < NUM_PLAYERS; i++) {
         dracView->players[i] = malloc(sizeof(struct _player));
@@ -51,7 +48,6 @@ DracView newDracView(char *pastPlays, PlayerMessage messages[])
     }
     analyseTraps(dracView, pastPlays);
     return dracView;
-
 }
 
 static void analyseTraps(DracView dracView, char *pastPlays)
