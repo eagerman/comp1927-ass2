@@ -152,7 +152,13 @@ int main()
     printf("Pretty good. FINAL TESTS.......\n");
     PlayerMessage messages8[] = { "0" };
     gv = newGameView("GED.... SGE.... HZU.... MCA.... DCF.V.. GMN.... SCFVD.. HGE.... MLS.... DBOT... GLO.... SMR.... HCF.... MMA.... DTOT... GPL.... SMS.... HMR.... MGR.... DBAT... GLO.... SBATD.. HMS.... MMA.... DSRT... GPL.... SSJ.... HBA.... MGR.... DALT... GPL.... SSJ.... HBA.... MGR.... DMAT... GLO.... SBE.... HMS.... MMATD..", messages8);
-    
+
+    printf("More tests\n" );
+    PlayerMessage sometxt[] = {"Hello","World","Bingo","","Bongo"};
+    gv = newGameView("GST.... SAO.... HZU.... MBB.... DTP....", sometxt);
+    assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS 
+                                            + LIFE_GAIN_CASTLE_DRACULA); 
     return 0;
 }
+
 
