@@ -32,15 +32,18 @@ DracView newDracView(char *pastPlays, PlayerMessage messages[])
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     DracView dracView = malloc(sizeof(struct dracView));
+
     dracView->g = newGameView(pastPlays, messages);
+
     memset(dracView->Traps, 0, NUM_MAP_LOCATIONS* sizeof(LocationID));
+
 
     for (int i = 0; i < NUM_PLAYERS; i++) {
         printf("setting for player %d\n", i);
         dracView->players[i] = malloc(sizeof(struct _player));
         int size, *edges;
         if (getLocation(dracView->g, i) == UNKNOWN_LOCATION) break;
-        memset(dracView->players[i]->connections, 0, NUM_MAP_LOCATIONS* sizeof(int));
+        memset(dracView->players[i]->connections, 0, sizeof(dracView->players[i]->connections));
         edges = connectedLocations(dracView->g, &size, getLocation(dracView->g, i), i, getRound(dracView->g), TRUE, TRUE, TRUE);
         printf("edges done\n");
         for (int j = 0; j < size; j++) {
@@ -81,7 +84,6 @@ static void analyseTraps(DracView dracView, char *pastPlays)
             encounter[2] = '\0';
 
             for (int i = 0; i < 2; i++) {
-
                 switch(encounter[i]) {
                     case 'T': dracView->Traps[abbrevToID(location)] += 1; break;
                     case 'V': dracView->immatureVampire = abbrevToID(location); break;

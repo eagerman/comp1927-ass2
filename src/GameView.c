@@ -373,10 +373,11 @@ void disposeGameView(GameView toBeDeleted)
 {
     //COMPLETE THIS IMPLEMENTATION
     assert(toBeDeleted != NULL);
-    for (int i = 0; i < TRAIL_SIZE; i++) {
+    disposeMap(toBeDeleted->map);
+    for (int i = 0; i < NUM_PLAYERS; i++) {
         free(toBeDeleted->players[i]);
     }
-    free( toBeDeleted );
+    free ( toBeDeleted );
 }
 
 
