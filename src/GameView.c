@@ -83,7 +83,6 @@ static int calculateArrayLength(char* pastPlays)
 static void analyseMove(char move[], GameView g)
 {
     PlayerID player = move[0];
-    g->currentPlayer = player;
     char location[2];
     memcpy(location, &move[1], 2);
     location[2] = '\0';
