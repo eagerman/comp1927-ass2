@@ -119,6 +119,9 @@ static void analyseTraps(DracView dracView, char *pastPlays)
 void disposeDracView(DracView toBeDeleted)
 {
     //COMPLETE THIS IMPLEMENTATION
+    for (int i = 0; i < NUM_PLAYERS; i++) {
+        free( toBeDeleted->players[i] );
+    }
     free( toBeDeleted );
 }
 
