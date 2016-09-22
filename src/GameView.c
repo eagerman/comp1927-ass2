@@ -125,7 +125,7 @@ static void analyseMove(char move[], GameView g)
         } else if (strcmp("TP", location) == 0) {
             g->players[PLAYER_DRACULA]->current = CASTLE_DRACULA;
             addToTrail(PLAYER_DRACULA, g, CASTLE_DRACULA);
-            g->players[PLAYER_DRACULA]->health = LIFE_GAIN_CASTLE_DRACULA;
+            g->players[PLAYER_DRACULA]->health += LIFE_GAIN_CASTLE_DRACULA;
         } else if (strcmp("..", location) == 0){
             // do nothing
         } else {
