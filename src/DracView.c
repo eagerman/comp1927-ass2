@@ -214,7 +214,6 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
                            PlayerID player, int road, int rail, int sea)
 {
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     LocationID *moves = (LocationID *)malloc(currentView->players[player]->numLocations*sizeof(LocationID));
     int k = 0;
     printf("k should be zero\n");
