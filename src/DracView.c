@@ -190,9 +190,24 @@ void giveMeTheTrail(DracView currentView, PlayerID player,
 LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+    LocationID *moves = (LocationID *)malloc(currentView->players[PLAYER_DRACULA]->numLocations*sizeof(LocationID));
+    int k = 0;
+    for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
+        if (currentView->players[PLAYER_DRACULA]->connections[i] == 1 ) {
+            if (road == TRUE && idToType(i) == ROAD) {
+                moves[k] = i;
+                k++;
+            }
+            if (sea == TRUE && idToType(i) == SEA) {
+                moves[k] = i;
+                k++;
+            }
+        }
+    }
+    *numLocations = k;
 
 //    LocationID moves[NUM_MAP_LOCATIONS];
-    return NULL;
+    return moves;
 }
 
 // What are the specified player's next possible moves
