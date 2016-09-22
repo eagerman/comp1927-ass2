@@ -72,15 +72,15 @@ static void analyseTraps(DracView dracView, char *pastPlays)
         if ((currPlay+1) % 5 == 0) {
             assert(pastPlays[currPlay*8] == 'D');
 
-            char action[1];
+            char action[2];
             memcpy(action, &pastPlays[currPlay*8+5], 1);
             action[1] = '\0';
 
-            char location[2];
+            char location[3];
             memcpy(location, &pastPlays[currPlay*8+1], 2);
             location[2] = '\0';
 
-            char encounter[2];
+            char encounter[3];
             memcpy(encounter, &pastPlays[currPlay*8+3], 2);
             encounter[2] = '\0';
 
