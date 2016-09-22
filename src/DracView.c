@@ -12,9 +12,8 @@
 typedef struct _player *Player;
 
 struct dracView {
+    GameView g;
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    Round round;
-    int score;
     Player players[NUM_PLAYERS];
     LocationID immatureVampire;
     LocationID Traps[NUM_MAP_LOCATIONS];
@@ -36,36 +35,29 @@ DracView newDracView(char *pastPlays, PlayerMessage messages[])
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     DracView dracView = malloc(sizeof(struct dracView));
-    GameView g = newGameView(pastPlays, messages);
-    LocationID Traps[NUM_MAP_LOCATIONS] = { 0 };
+    dracView->g = newGameView(pastPlays, messages);
+    memset(dracView->Traps, 0, NUM_MAP_LOCATIONS* sizeof(LocationID));
 
-    dracView->Traps[NUM_MAP_LOCATIONS] = *Traps;
-
-    dracView->round = getRound(g);
-    dracView->score = getScore(g);
-    printf("Round is %d\n", dracView->round);
     for (int i = 0; i < NUM_PLAYERS; i++) {
         printf("setting for player %d\n", i);
         dracView->players[i] = malloc(sizeof(struct _player));
-        dracView->players[i]->health = getHealth(g, i);
-        dracView->players[i]->location = getLocation(g, i);
-        getHistory(g, i, dracView->players[i]->history);
+        dracView->players[i]->health = getHealth(dracView->g, i);
+        dracView->players[i]->location = getLocation(dracView->g, i);
+        getHistory(dracView->g, i, dracView->players[i]->history);
 
         if (dracView->players[i]->location == UNKNOWN_LOCATION) break;
         int size, *edges;
         memset(dracView->players[i]->connections, 0, NUM_MAP_LOCATIONS* sizeof(int));
-        edges = connectedLocations(g, &size, dracView->players[i]->location, i, dracView->round, TRUE, TRUE, TRUE);
+        edges = connectedLocations(dracView->g, &size, dracView->players[i]->location, i, getRound(dracView->g), TRUE, TRUE, TRUE);
         printf("edges done\n");
         for (int j = 0; j < size; j++) {
             dracView->players[i]->connections[edges[j]] = 1;
         }
         printf("finished for player %d\n", i);
     }
-
     analyseTraps(dracView, pastPlays);
-
-
     return dracView;
+
 }
 
 static void analyseTraps(DracView dracView, char *pastPlays)
@@ -96,6 +88,7 @@ static void analyseTraps(DracView dracView, char *pastPlays)
             encounter[2] = '\0';
 
             for (int i = 0; i < 2; i++) {
+
                 switch(encounter[i]) {
                     case 'T': dracView->Traps[abbrevToID(location)] += 1; break;
                     case 'V': dracView->immatureVampire = abbrevToID(location); break;
@@ -111,7 +104,6 @@ static void analyseTraps(DracView dracView, char *pastPlays)
         }
         currPlay += 1;
     }
-
 }
      
      
@@ -119,6 +111,7 @@ static void analyseTraps(DracView dracView, char *pastPlays)
 void disposeDracView(DracView toBeDeleted)
 {
     //COMPLETE THIS IMPLEMENTATION
+    disposeGameView(toBeDeleted->g);
     for (int i = 0; i < NUM_PLAYERS; i++) {
         free( toBeDeleted->players[i] );
     }
@@ -132,28 +125,28 @@ void disposeDracView(DracView toBeDeleted)
 Round giveMeTheRound(DracView currentView)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return currentView->round;
+    return getRound(currentView->g);
 }
 
 // Get the current score
 int giveMeTheScore(DracView currentView)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return currentView->score;
+    return getScore(currentView->g);
 }
 
 // Get the current health points for a given player
 int howHealthyIs(DracView currentView, PlayerID player)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return currentView->players[player]->health;
+    return getHealth(currentView->g, player);
 }
 
 // Get the current location id of a given player
 LocationID whereIs(DracView currentView, PlayerID player)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return currentView->players[player]->location;
+    return getLocation(currentView->g, player);
 }
 
 // Get the most recent move of a given player
@@ -163,7 +156,6 @@ void lastMove(DracView currentView, PlayerID player,
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     *start = currentView->players[player]->history[1];
     *end = currentView->players[player]->history[0];
-    return;
 }
 
 // Find out what minions are placed at the specified location
@@ -171,6 +163,9 @@ void whatsThere(DracView currentView, LocationID where,
                          int *numTraps, int *numVamps)
 {
     *numTraps = currentView->Traps[where];
+    printf("where is %d\n", where);
+    printf("whereTraps is %d\n", currentView->Traps[where]);
+    printf("numTraps is %d\n", *numTraps);
     if (where == currentView->immatureVampire) {
         *numVamps = 1;
     } else {
