@@ -81,7 +81,11 @@ static int calculateArrayLength(char* pastPlays)
 }
 
 static void analyseMove(char move[], GameView g)
-{
+{   // when you initialise an array you have to 
+    // write the array size in the square brackets
+    // you need an extra byte for a null terminator
+    // otherwise there will be buffer overflow
+    // Khaled said go back to COMP1917 
     PlayerID player = move[0];
     char location[2];
     memcpy(location, &move[1], 2);
