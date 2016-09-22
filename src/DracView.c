@@ -214,29 +214,46 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
                            PlayerID player, int road, int rail, int sea)
 {
-    LocationID *moves = (LocationID *)malloc(currentView->players[player]->numLocations*sizeof(LocationID));
-    int k = 0;
-    if (player == PLAYER_DRACULA) {
-        moves = whereCanIgo(currentView, numLocations,road, sea);
-        return moves;
+    // LocationID *moves = (LocationID *)malloc(currentView->players[player]->numLocations*sizeof(LocationID));
+    // int k = 0;
+    // if (player == PLAYER_DRACULA) {
+    //     moves = whereCanIgo(currentView, numLocations,road, sea);
+    //     return moves;
+    // }
+    // for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
+    //     if ( currentView->players[player]->connections[i] == 1 ) {
+    //         printf("name of location is %s\n", idToName(i));
+    //         if (road == TRUE && idToType(i) == ROAD) {
+    //             moves[k] = i;
+    //             k++;
+    //         }
+    //         if (rail == TRUE && idToType(i) == RAIL) {
+    //             moves[k] = i;
+    //             k++;
+    //         }
+    //         if (sea == TRUE && (idToType(i) == SEA || idToType(i) == SEA_UNKNOWN)) {
+    //             moves[k] = i;
+    //             k++;
+    //         }
+    //     }
+    // }
+    // printf("K is %d\n", k);
+    // *numLocations = k;
+    Round currRound = giveMeTheRound(currentView);
+    LocationID currLoc = getLocation(currentView->g, player);
+    LocationID * Locs;
+    //first check if player is before you or after you and modify round if before
+    currRound++;
+    //printf("player right now is: %d on round %d at %d\n", player, currRound, currLoc);
+    if (currRound == 0){
+            Locs = (LocationID *)(malloc(sizeof(LocationID)*NUM_MAP_LOCATIONS));
+            *numLocations = NUM_MAP_LOCATIONS; //derefrence pointer and give location
+            for (int i = 0; i< NUM_MAP_LOCATIONS; i++) {//whole map is good
+                Locs[i] = i;
+            }
+    } else {
+        Locs = connectedLocations(currentView->g, numLocations,currLoc,player,currRound, road ,rail, sea);
     }
-    for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
-        if ( currentView->players[player]->connections[i] == 1 ) {
-            printf("name of location is %s\n", idToName(i));
-            if (road == TRUE && idToType(i) == ROAD) {
-                moves[k] = i;
-                k++;
-            }
-            if (rail == TRUE && idToType(i) == RAIL) {
-                moves[k] = i;
-                k++;
-            }
-            if (sea == TRUE && (idToType(i) == SEA || idToType(i) == SEA_UNKNOWN)) {
-                moves[k] = i;
-                k++;
-            }
-        }
-    }
-    *numLocations = k;
-    return moves;
+    //printf("NumLocs right now is: %d\n", *numLocations);
+    return Locs;
 }
