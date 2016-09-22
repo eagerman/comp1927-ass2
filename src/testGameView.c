@@ -110,6 +110,18 @@ int main()
     free(edges);
     printf("passed\n");
     disposeGameView(gv);
+    
+    printf("Test one move initialisation\n");
+    PlayerMessage messages12[] = {"Hello"};
+    gv = newGameView("GAT....", messages12);
+    assert(getRound(gv) == 0);
+    assert(getLocation(gv, PLAYER_LORD_GODALMING) == ATHENS);
+    assert(getCurrentPlayer(gv) == PLAYER_DR_SEWARD);
+    assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS);
+    printf("passed\n");
+    disposeGameView(gv);
+    
+    
     return 0;
 }
 

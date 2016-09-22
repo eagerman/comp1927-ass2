@@ -529,5 +529,6 @@ LocationID *connectedLocations(GameView currentView, int *numLocations,
         }
     }
     *numLocations = retLen;
+    //printf("retLen is %d and k is %d", retLen, k);
     return connectedLocs;
 }
