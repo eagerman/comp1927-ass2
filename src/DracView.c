@@ -203,7 +203,10 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
     LocationID *moves = (LocationID *)malloc(currentView->players[player]->numLocations*sizeof(LocationID));
     int k = 0;
     printf("k should be zero\n");
-
+    if (player == PLAYER_DRACULA) {
+        moves = whereCanIgo(currentView, numLocations,road, sea);
+        return moves;
+    }
     for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
         if ( currentView->players[player]->connections[i] == 1 ) {
             printf("name of location is %s\n", idToName(i));
