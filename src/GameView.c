@@ -54,6 +54,7 @@ GameView newGameView(char *pastPlays, PlayerMessage messages[])
     int numPlays = calculateArrayLength(pastPlays)/8;
     setInitialState(g);
     g->currentRound = numPlays / NUM_PLAYERS;
+    g->currentPlayer = numPlays % NUM_PLAYERS;
     int currPlay = 0;
     int strIndex = 0;
 
@@ -155,7 +156,6 @@ static void analyseMove(char move[], GameView g)
                 case '.': break;
             }
         }
-
     }
     
     // Do stuff if its a hunter
