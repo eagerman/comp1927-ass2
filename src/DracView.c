@@ -49,6 +49,7 @@ DracView newDracView(char *pastPlays, PlayerMessage messages[])
         for (int j = 0; j < size; j++) {
             dracView->players[i]->connections[edges[j]] = 1;
         }
+        free(edges);
         printf("finished for player %d\n", i);
     }
     analyseTraps(dracView, pastPlays);
@@ -206,20 +207,18 @@ LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
     for (int i = 0; i < NUM_MAP_LOCATIONS; i++) {
         if ( currentView->players[player]->connections[i] == 1 ) {
             printf("name of location is %s\n", idToName(i));
-//            if (road == TRUE && idToType(i) == ROAD) {
-//                moves[k] = i;
-//                k++;
-//            }
-//            if (rail == TRUE && idToType(i) == RAIL) {
-//                moves[k] = i;
-//                k++;
-//            }
-//            if (sea == TRUE && (idToType(i) == SEA || idToType(i) == SEA_UNKNOWN)) {
-//                moves[k] = i;
-//                k++;
-//            }
-            moves[k] = i;
-            k++;
+            if (road == TRUE && idToType(i) == ROAD) {
+                moves[k] = i;
+                k++;
+            }
+            if (rail == TRUE && idToType(i) == RAIL) {
+                moves[k] = i;
+                k++;
+            }
+            if (sea == TRUE && (idToType(i) == SEA || idToType(i) == SEA_UNKNOWN)) {
+                moves[k] = i;
+                k++;
+            }
         }
     }
     printf("k is %d\n", k);
