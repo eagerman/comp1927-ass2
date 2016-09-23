@@ -161,21 +161,34 @@ int main()
     printf("passed\n"); 
     disposeGameView(gv);
 
-    printf("Testing \"Hunters health should not exceed 9pts\"\n");
-    gv = newGameView("GBE.... SGE.... HZU.... MCA.... DLO.... GB.... SGE.... HZU.... MCA.... DLO....", sometxt);
+    printf("Testing.. \"Hunters health should not exceed 9pts\"\n");
+    gv = newGameView("GBE.... SGE.... HZU.... MCA.... DLO.... GBE... SGE.... HZU.... MCA.... DLO....", sometxt);
     assert(getHealth(gv,PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS);
     printf("passed\n");
     disposeGameView(gv);
 
-    printf("Hunters Resurrection\n" );
+    printf("Testing.. \"Hunter resting  in a city gains 3pts\"\n");
+    gv = newGameView("GBE.... SGE.... HZU.... MCA.... DBE.... GBE...D. SGE.... HZU.... MCA.... DLO.... GBE....", sometxt);
+    //printf("G->health %d\n", getHealth(gv,PLAYER_LORD_GODALMING));
+    assert(getHealth(gv,PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS
+                                                    - LIFE_LOSS_DRACULA_ENCOUNTER
+                                                    + LIFE_GAIN_REST);
+    printf("passed\n");
+    disposeGameView(gv);
+
+    printf("Hunters Resurrection in the Hospital\n" );
     gv = newGameView("GZU.... SGE.... HZU.... MCA.... DBETV.. GBETD.. SGE.... HZU.... MCA.... DLOTV.. GLOTD.. SGE.... HZU.... MCA.... DCF.V..", sometxt); 
     //GODALMING should die with 9-4-2-4-2=-3pts
+    printf("Score is %d\n", getScore(gv)); //failed
     printf("G->health = %d\n",getHealth(gv,PLAYER_LORD_GODALMING));
+    assert(getLocation(gv,PLAYER_LORD_GODALMING) == ST_JOSEPH_AND_ST_MARYS);
+    assert(getScore(gv) == GAME_START_SCORE - SCORE_LOSS_HUNTER_HOSPITAL);
 
     assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS-2*LIFE_LOSS_HUNTER_ENCOUNTER);
     assert(getHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS
                                                     - 2*LIFE_LOSS_DRACULA_ENCOUNTER
                                                     - 2*LIFE_LOSS_TRAP_ENCOUNTER); 
+    
     printf("passed\n");
     disposeGameView(gv);
 
