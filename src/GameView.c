@@ -171,22 +171,21 @@ static void analyseMove(char move[], GameView g)
 
         }
 
+        // Move the player
+        g->players[currHunter]->currLoc = currLocation;
+        addToTrail(currHunter, g, currLocation);
+        
         // increase health if hunters rests in the same city
         // but not if encouters Draculla
-       /* if (g->currentRound > 1){
-            if (g->players[currHunter]->currLoc == 
-                g->players[currHunter]->history[1] && !isEncounter(encounter))
+        if (g->currentRound > 1){
+            if ((g->players[currHunter]->currLoc == 
+                g->players[currHunter]->history[1]) && !isEncounter(encounter))
             {
-                printf("%s\n","========" );
                 g->players[currHunter]->health += LIFE_GAIN_REST;
                 if (g->players[currHunter]->health > 9) 
                     g->players[currHunter]->health = 9;
             }
-        }  */
-
-        // Move the player
-        g->players[currHunter]->currLoc = currLocation;
-        addToTrail(currHunter, g, currLocation);
+        }  
 
         // Make the action?
         for (int i=0; i < 4; i++) {
