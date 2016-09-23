@@ -91,7 +91,7 @@ static void analyseMove(char move[], GameView g)
     
     char actions[5];
     memcpy(actions, &move[3], 4);
-    actions[5] = '\0';
+    actions[4] = '\0';
 
     //Do stuff if it's a dracula
     if (player == 'D') {
