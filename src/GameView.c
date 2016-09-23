@@ -38,7 +38,7 @@ static void actionV(PlayerID player, GameView g);
 static int calculateArrayLength(char* pastPlays);
 static void addToTrail(PlayerID player, GameView g, LocationID currLocation);
 static void checkDracSea(GameView g);
-int isEncounter(char *enc);
+int isResting(char *act);
 // Drac Actions
 static void dracT(GameView g);
 static void dracIV(GameView g);
@@ -88,12 +88,10 @@ static void analyseMove(char move[], GameView g)
     memcpy(location, &move[1], 2);
     location[2] = '\0';
     LocationID currLocation = abbrevToID(location);
+    
     char actions[5];
     memcpy(actions, &move[3], 4);
-    actions[4] = '\0';
-    char encounter[3];
-    memcpy(encounter, &actions[0], 2);
-    encounter[2] = '\0';
+    actions[5] = '\0';
 
     //Do stuff if it's a dracula
     if (player == 'D') {
@@ -134,7 +132,9 @@ static void analyseMove(char move[], GameView g)
         }
         checkDracSea(g);
         // Encounter
- 
+        char encounter[3];
+        memcpy(encounter, &actions[0], 2);
+        encounter[2] = '\0';
         for (int i = 0; i < 2; i++) {
             switch(encounter[i]) {
                 case 'T': dracT(g); break;
@@ -174,12 +174,12 @@ static void analyseMove(char move[], GameView g)
         // Move the player
         g->players[currHunter]->currLoc = currLocation;
         addToTrail(currHunter, g, currLocation);
-        
+
         // increase health if hunters rests in the same city
         // but not if encouters Draculla
         if (g->currentRound > 1){
-            if ((g->players[currHunter]->currLoc == 
-                g->players[currHunter]->history[1]) && !isEncounter(encounter))
+            if (g->players[currHunter]->currLoc == 
+                g->players[currHunter]->history[1] && isResting(actions))
             {
                 g->players[currHunter]->health += LIFE_GAIN_REST;
                 if (g->players[currHunter]->health > 9) 
@@ -199,7 +199,6 @@ static void analyseMove(char move[], GameView g)
                 }
             } else if (g->players[currHunter]->health <= 0 && g->players[PLAYER_DRACULA]->health > 0) {
                 // player is dead dracula is alive
-                g->players[currHunter]->health = 0;
                 g->players[currHunter]->currLoc = ST_JOSEPH_AND_ST_MARYS;
                 g->score -= SCORE_LOSS_HUNTER_HOSPITAL;
                 addToTrail(currHunter, g, currLocation);
@@ -346,11 +345,11 @@ static void addToTrail(PlayerID player, GameView g, LocationID currLocation)
     g->players[player]->history[0] = currLocation;
 }
   
-int isEncounter(char *enc){
-        for (int i = 0; i < 2; i++) {
-            if (enc[i] == 'T' || enc[i] == 'V') return 1;
+int isResting(char *act){
+        for (int i = 0; i < 3; i++) {
+            if (act[i] == 'T' || act[i] == 'D') return 0;
         }
-        return 0;
+        return 1;
 }   
 
 static void setInitialState(GameView g)
