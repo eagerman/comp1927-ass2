@@ -153,11 +153,32 @@ int main()
     PlayerMessage messages8[] = { "0" };
     gv = newGameView("GED.... SGE.... HZU.... MCA.... DCF.V.. GMN.... SCFVD.. HGE.... MLS.... DBOT... GLO.... SMR.... HCF.... MMA.... DTOT... GPL.... SMS.... HMR.... MGR.... DBAT... GLO.... SBATD.. HMS.... MMA.... DSRT... GPL.... SSJ.... HBA.... MGR.... DALT... GPL.... SSJ.... HBA.... MGR.... DMAT... GLO.... SBE.... HMS.... MMATD..", messages8);
 
-    printf("More tests\n" );
+    printf("Check Dracula's health increase if he visits CD\n" );
     PlayerMessage sometxt[] = {"Hello","World","Bingo","","Bongo"};
     gv = newGameView("GST.... SAO.... HZU.... MBB.... DTP....", sometxt);
     assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS 
-                                            + LIFE_GAIN_CASTLE_DRACULA); 
+                                            + LIFE_GAIN_CASTLE_DRACULA);
+    printf("passed\n"); 
+    disposeGameView(gv);
+
+    printf("Testing \"Hunters health should not exceed 9pts\"\n");
+    gv = newGameView("GBE.... SGE.... HZU.... MCA.... DLO.... GB.... SGE.... HZU.... MCA.... DLO....", sometxt);
+    assert(getHealth(gv,PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS);
+    printf("passed\n");
+    disposeGameView(gv);
+
+    printf("Hunters Resurrection\n" );
+    gv = newGameView("GZU.... SGE.... HZU.... MCA.... DBETV.. GBETD.. SGE.... HZU.... MCA.... DLOTV.. GLOTD.. SGE.... HZU.... MCA.... DCF.V..", sometxt); 
+    //GODALMING should die with 9-4-2-4-2=-3pts
+    printf("G->health = %d\n",getHealth(gv,PLAYER_LORD_GODALMING));
+
+    assert(getHealth(gv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS-2*LIFE_LOSS_HUNTER_ENCOUNTER);
+    assert(getHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS
+                                                    - 2*LIFE_LOSS_DRACULA_ENCOUNTER
+                                                    - 2*LIFE_LOSS_TRAP_ENCOUNTER); 
+    printf("passed\n");
+    disposeGameView(gv);
+
     return 0;
 }
 
