@@ -149,10 +149,6 @@ int main()
     printf("passed\n");
     disposeGameView(gv);
 
-    printf("Pretty good. FINAL TESTS.......\n");
-    PlayerMessage messages8[] = { "0" };
-    gv = newGameView("GED.... SGE.... HZU.... MCA.... DCF.V.. GMN.... SCFVD.. HGE.... MLS.... DBOT... GLO.... SMR.... HCF.... MMA.... DTOT... GPL.... SMS.... HMR.... MGR.... DBAT... GLO.... SBATD.. HMS.... MMA.... DSRT... GPL.... SSJ.... HBA.... MGR.... DALT... GPL.... SSJ.... HBA.... MGR.... DMAT... GLO.... SBE.... HMS.... MMATD..", messages8);
-
     printf("Check Dracula's health increase if he visits CD\n" );
     PlayerMessage sometxt[] = {"Hello","World","Bingo","","Bongo"};
     gv = newGameView("GST.... SAO.... HZU.... MBB.... DTP....", sometxt);
@@ -168,8 +164,7 @@ int main()
     disposeGameView(gv);
 
     printf("Testing.. \"Hunter resting  in a city gains 3pts\"\n");
-    gv = newGameView("GBE.... SGE.... HZU.... MCA.... DBE.... GBE...D. SGE.... HZU.... MCA.... DLO.... GBE....", sometxt);
-    //printf("G->health %d\n", getHealth(gv,PLAYER_LORD_GODALMING));
+    gv = newGameView("GBE.... SGE.... HZU.... MCA.... DBE.... GBE..D. SGE.... HZU.... MCA.... DLO.... GBE....", sometxt);
     assert(getHealth(gv,PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS
                                                     - LIFE_LOSS_DRACULA_ENCOUNTER
                                                     + LIFE_GAIN_REST);
@@ -179,8 +174,7 @@ int main()
     printf("Hunters Resurrection in the Hospital\n" );
     gv = newGameView("GZU.... SGE.... HZU.... MCA.... DBETV.. GBETD.. SGE.... HZU.... MCA.... DLOTV.. GLOTD.. SGE.... HZU.... MCA.... DCF.V..", sometxt); 
     //GODALMING should die with 9-4-2-4-2=-3pts
-    printf("Score is %d\n", getScore(gv)); //failed
-    printf("G->health = %d\n",getHealth(gv,PLAYER_LORD_GODALMING));
+    printf("---G->health = %d\n",getHealth(gv,PLAYER_LORD_GODALMING));
     assert(getLocation(gv,PLAYER_LORD_GODALMING) == ST_JOSEPH_AND_ST_MARYS);
     assert(getScore(gv) == GAME_START_SCORE - SCORE_LOSS_HUNTER_HOSPITAL);
 
